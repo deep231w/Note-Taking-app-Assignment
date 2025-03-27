@@ -6,7 +6,7 @@ import "./globals.css";
 import theme from "@/components/theme";
 import { ThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
-
+import Navbar from "@/components/navbar";
 // const geistSans = Geist({
 //   variable: "--font-geist-sans",
 //   subsets: ["latin"],
@@ -34,6 +34,7 @@ export default function RootLayout({
       >
         <ThemeProvider theme={theme}>
           <CssBaseline/>
+          <Navbar/>
           {children}
         </ThemeProvider>
       </body>
