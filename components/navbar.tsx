@@ -1,6 +1,6 @@
 "use client"
 import Image from "next/image";
-
+import { ModeToggle } from "./toggleBtn";
 export default function Navbar(){
     return (
         <div className="flex items-center justify-between p-2 bg-gray-100 shadow-xl">
@@ -18,7 +18,7 @@ export default function Navbar(){
             </div>
             <div className="flex items-center justify-between p-2 gap-x-10">
                 <div>
-                    theme
+                    <ModeToggle/>
                 </div>
                 <div>
                     profile pic
