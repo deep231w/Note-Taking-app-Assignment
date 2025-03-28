@@ -6,29 +6,25 @@ import {
   type AuthResponse,
 } from '@toolpad/core/SignInPage';
 import { useTheme } from '@mui/material/styles';
-
+import { signIn as handleSignin } from '@/utils/signInAuth';
 const providers = [{ id: 'credentials', name: 'Email and password' }];
 
 const signIn: (
   provider: AuthProvider,
   formData?: FormData,
 ) => Promise<AuthResponse> | void = async (provider, formData) => {
-  const promise = new Promise<AuthResponse>((resolve) => {
-    setTimeout(() => {
-      const email = formData?.get('email');
-      const password = formData?.get('password');
-      alert(
-        `Signing in with "${provider.name}" and credentials: ${email}, ${password}`,
-      );
-      // preview-start
-      resolve({
-        type: 'CredentialsSignin',
-        error: 'Invalid credentials.',
-      });
-      // preview-end
-    }, 300);
-  });
-  return promise;
+
+  const email = formData?.get('email') as string | undefined;
+  const password = formData?.get('password') as string | undefined;
+  if(!email || !password){
+    return{
+      type: 'CredentialsSignin',
+      error: 'Email and password are required.',
+
+    }
+  }
+  return handleSignin(email,password);
+  
 };
 
 export function NotificationsSignInPageError() {
