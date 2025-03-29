@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-
+import { SignUp as handleSignup } from "@/utils/signUpAuth";
 export default function SignupComponent() {
   const [formData, setFormData] = useState({
     name: "",
@@ -19,28 +19,8 @@ export default function SignupComponent() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
-
-    try {
-      const res = await fetch("/api/auth/signup", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
-      });
-
-      const data = await res.json();
-
-      if (!res.ok) {
-        setError(data.error || "Signup failed");
-        return;
-      }
-
-      // Redirect or show success message
-      alert("Signup successful!");
-    } catch (err) {
-      setError("Something went wrong. Please try again.");
-    }
+    console.log("form data: ", formData);
+    return handleSignup(formData.name,formData.email, formData.password )
   };
 
   return (
