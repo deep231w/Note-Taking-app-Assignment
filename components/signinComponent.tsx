@@ -1,3 +1,5 @@
+'use client';
+
 import * as React from 'react';
 import { AppProvider } from '@toolpad/core/AppProvider';
 import {
@@ -7,37 +9,48 @@ import {
 } from '@toolpad/core/SignInPage';
 import { useTheme } from '@mui/material/styles';
 import { signIn as handleSignin } from '@/utils/signInAuth';
+import { useRouter } from 'next/navigation'; // ✅ Use from next/navigation
+
 const providers = [{ id: 'credentials', name: 'Email and password' }];
 
-const signIn: (
+const signIn = async (
   provider: AuthProvider,
   formData?: FormData,
-) => Promise<AuthResponse> | void = async (provider, formData) => {
-
+  router?: ReturnType<typeof useRouter>
+): Promise<AuthResponse> => {
   const email = formData?.get('email') as string | undefined;
   const password = formData?.get('password') as string | undefined;
-  if(!email || !password){
-    return{
+
+  if (!email || !password) {
+    return {
       type: 'CredentialsSignin',
       error: 'Email and password are required.',
-
-    }
+    };
   }
-  return handleSignin(email,password);
-  
+
+  const response = await handleSignin(email, password);
+
+  if (response?.success === 'true' && router) {
+    router.push('/dashboard');
+  }
+
+  return response;
 };
 
 export function NotificationsSignInPageError() {
   const theme = useTheme();
+  const router = useRouter(); // ✅ Now works without error
+
   return (
-    // preview-start
     <AppProvider theme={theme}>
       <SignInPage
-        signIn={signIn}
+        signIn={(provider, formData) => signIn(provider, formData, router)}
         providers={providers}
-        slotProps={{ emailField: { autoFocus: false }, form: { noValidate: true } }}
+        slotProps={{
+          emailField: { autoFocus: false },
+          form: { noValidate: true },
+        }}
       />
     </AppProvider>
-    // preview-end
   );
 }

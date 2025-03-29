@@ -17,12 +17,14 @@ export const signIn = async (email: string, password: string) => {
       return {
         type: 'CredentialsSignin',
         error: undefined,
+        success:"true"
       };
     } catch (error) {
       console.error('Sign-in failed:', error);
       return {
         type: 'CredentialsSignin',
         error: 'Something went wrong. Try again.',
+        success:"false"
       };
     }
   };

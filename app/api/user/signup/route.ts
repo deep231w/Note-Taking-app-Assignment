@@ -28,9 +28,11 @@ export async function POST(req:NextRequest) {
             email,
             password:hashedPassword
         })
+        const userData= user.toObject();
+        delete userData.password;
         return NextResponse.json({
             message:"signup successfully",
-            user:user
+            user:userData
         })
     }catch(e){
         console.log("error during signup: ", e)

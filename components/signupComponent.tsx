@@ -1,6 +1,8 @@
 "use client";
 import { useState } from "react";
 import { SignUp as handleSignup } from "@/utils/signUpAuth";
+import { useRouter} from "next/navigation";
+
 export default function SignupComponent() {
   const [formData, setFormData] = useState({
     name: "",
@@ -8,7 +10,7 @@ export default function SignupComponent() {
     password: "",
   });
   const [error, setError] = useState<string | null>(null);
-
+  const router= useRouter();
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData((prev) => ({
       ...prev,
@@ -20,7 +22,14 @@ export default function SignupComponent() {
     e.preventDefault();
     setError(null);
     console.log("form data: ", formData);
-    return handleSignup(formData.name,formData.email, formData.password )
+    const response=await handleSignup(formData.name,formData.email, formData.password )
+    console.log("response after signup:", response);
+    if(response?.status === 200){
+      router.push('/dashboard');
+    }
+    else{
+      setError("signin failed");
+    }
   };
 
   return (

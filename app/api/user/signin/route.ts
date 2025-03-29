@@ -35,8 +35,6 @@ export async function POST( req:NextRequest) {
         const userData= user.toObject();
         delete userData.password;
 
-        console.log("data from frontend signin : ", body);
-
         return NextResponse.json({
             message:"logged in successfully",
             user:userData,
