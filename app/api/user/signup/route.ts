@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { User } from "@/db/models/user";
 import { connectDB } from "@/lib/db";
+import bcrypt from "bcryptjs";
+
 export async function POST(req:NextRequest) {
     try{
         await connectDB();
@@ -19,10 +21,12 @@ export async function POST(req:NextRequest) {
                 message:"user alredy exists , please try again with another email"
             })
         }
+        const hashedPassword= await bcrypt.hash(password, 10);
+
         const user= await User.create({
             name,
             email,
-            password
+            password:hashedPassword
         })
         return NextResponse.json({
             message:"signup successfully",
