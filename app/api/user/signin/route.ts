@@ -3,11 +3,20 @@ import { connectDB } from "@/lib/db";
 import { User } from "@/db/models/user";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
+import { serialize } from "cookie";
 export async function POST( req:NextRequest) {
    try{ 
         await connectDB();
         const body=await req.json();
+        if (!body) {
+            return NextResponse.json({ message: "Invalid request body" }, { status: 400 });
+        }
+
         const {email, password}= body;
+        if(!email || !password){
+            return NextResponse.json({message :"invalid credentials"},{status:400});
+        }
+
         const user= await User.findOne({email});
         if(!user){
             return NextResponse.json(
@@ -27,6 +36,7 @@ export async function POST( req:NextRequest) {
             status:401
         })
         }
+        
         const token= jwt.sign(
             {userId:user._id},
             process.env.JWT_SECRET as string,
@@ -34,13 +44,22 @@ export async function POST( req:NextRequest) {
         );
         const userData= user.toObject();
         delete userData.password;
-
-        return NextResponse.json({
+        const cookie= serialize("token", token, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === "production", 
+            sameSite: "strict",
+            path: "/",
+            maxAge: 7 * 24 * 60 * 60,
+        })
+        const res=NextResponse.json({
             message:"logged in successfully",
             user:userData,
             token,
-
         });
+
+        res.headers.set("set-cookie", cookie);
+        return res;
+
     }catch(e){
         console.log("error during signin:  ",e);
         return NextResponse.json({error:e});
