@@ -38,19 +38,19 @@ export async function POST(req:NextRequest) {
         const userData= user.toObject();
         delete userData.password;
 
-        // const cookie= serialize("token",token, {
-        //     httpOnly: false,
-        //     secure: process.env.NODE_ENV === "production",
-        //     sameSite: "strict",
-        //     path: "/",
-        //     maxAge: 7 * 24 * 60 * 60,
-        // })
+        const cookie= serialize("token",token, {
+            httpOnly: false,
+            secure: process.env.NODE_ENV === "production",
+            sameSite: "strict",
+            path: "/",
+            maxAge: 7 * 24 * 60 * 60,
+        })
 
         const res= NextResponse.json({
             message:"signup successfully",
             user:userData
         })
-        // res.headers.set("set-cookies",cookie);
+        res.headers.set("set-cookies",cookie);
 
         return res;
 
