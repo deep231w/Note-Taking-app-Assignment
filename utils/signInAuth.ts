@@ -9,11 +9,12 @@ export const signIn = async (email: string, password: string) => {
         withCredentials:true
       })
   
-    //   if(Response.status==200){
-    //     const {user}= Response.data;
-    //     localStorage.setItem("user",JSON.stringify(user));
-    //     console.log("user after signin= ",user);
-    //   }
+      if(Response.status==200){
+        const {user, token}= Response.data;
+        localStorage.setItem("user",JSON.stringify(user));
+        localStorage.setItem("token",token);
+        console.log("user after signin= ",user);
+      }
       return {
         type: 'CredentialsSignin',
         error: undefined,

@@ -36,7 +36,7 @@ export async function POST( req:NextRequest) {
             status:401
         })
         }
-        
+
         const token= jwt.sign(
             {userId:user._id},
             process.env.JWT_SECRET as string,
@@ -44,20 +44,20 @@ export async function POST( req:NextRequest) {
         );
         const userData= user.toObject();
         delete userData.password;
-        const cookie= serialize("token", token, {
-            httpOnly: true,
-            secure: process.env.NODE_ENV === "production", 
-            sameSite: "strict",
-            path: "/",
-            maxAge: 7 * 24 * 60 * 60,
-        })
+        // const cookie= serialize("token", token, {
+        //     httpOnly: false,
+        //     secure: process.env.NODE_ENV === "production", 
+        //     sameSite: "strict",
+        //     path: "/",
+        //     maxAge: 7 * 24 * 60 * 60,
+        // })
         const res=NextResponse.json({
             message:"logged in successfully",
             user:userData,
             token,
         });
 
-        res.headers.set("set-cookie", cookie);
+        // res.headers.set("set-cookie", cookie);
         return res;
 
     }catch(e){
