@@ -1,20 +1,23 @@
 "use client"
 import AddNoteModal from "@/components/addNoteModel";
 import NoteCard from "@/components/noteCard";
-
-const notes = [
-    { id: 1, title: "Note 1", description: "This is the first note." },
-    { id: 2, title: "Note 2", description: "This is the second note." },
-  ];
+import { useAuth } from "@/context/authContext";
+import useFetchNotes from "@/hook/fetchNotesHook";
 
 export default function Dashboard(){
-    const handleEdit = (id: number) => {
+    const {user , loading}= useAuth();
+    const {notes, loading:notesLoading, error}=useFetchNotes(user?._id);
+
+    const handleEdit = (id: string) => {
         console.log("Edit note with id:", id);
       };
     
-      const handleDelete = (id: number) => {
+      const handleDelete = (id: string) => {
         console.log("Delete note with id:", id);
       };
+      
+      if (loading || notesLoading) return <p>Loading...</p>;
+      if (error) return <p>Error: {error}</p>;
     return(
         <div>
             <div>
@@ -23,11 +26,11 @@ export default function Dashboard(){
             <div>
             {notes.map((note) => (
         <NoteCard
-          key={note.id}
+          key={note._id}
           title={note.title}
           description={note.description}
-          onEdit={() => handleEdit(note.id)}
-          onDelete={() => handleDelete(note.id)}
+          onEdit={() => handleEdit(note._id)}
+          onDelete={() => handleDelete(note._id)}
         />
       ))}
             </div>
