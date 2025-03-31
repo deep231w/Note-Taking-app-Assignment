@@ -19,6 +19,7 @@ export default function AddNoteModal() {
     setDescription("");
     setOpen(false);
     //refetch();
+    
   };
 
   return (

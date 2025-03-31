@@ -5,7 +5,7 @@ export const openDB = async () => {
       request.onupgradeneeded = (event) => {
         const db = (event.target as IDBOpenDBRequest).result;
         if (!db.objectStoreNames.contains("notes")) {
-          db.createObjectStore("notes", { keyPath: "id" });
+          db.createObjectStore("notes", { keyPath: "_id" });
         }
       };
   
@@ -15,12 +15,32 @@ export const openDB = async () => {
   };
   
   export const addNoteToDB = async (note: any) => {
+    if (!note._id) {
+        console.error("Error: Note is missing '_id' field", note);
+        return;
+    }
+
     const db = await openDB();
     const tx = db.transaction("notes", "readwrite");
     const store = tx.objectStore("notes");
-    store.put(note);
-    return tx.oncomplete;
-  };
+
+    const formattedNote = { ...note, _id: note._id.toString() };
+
+    console.log("Storing in IndexedDB:", formattedNote); 
+
+    store.put(formattedNote);
+
+    return new Promise<void>((resolve, reject) => {
+        tx.oncomplete = () => {
+            console.log("Note added successfully:", formattedNote);
+            resolve();
+        };
+        tx.onerror = (event) => {
+            console.error("Error adding note", event);
+            reject(event);
+        };
+    });
+};
   
   export const getNotesFromDB = async () => {
     const db = await openDB();
