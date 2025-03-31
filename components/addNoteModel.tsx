@@ -7,7 +7,7 @@ import useFetchNotes from "@/hook/fetchNotesHook";
 export default function AddNoteModal() {
   const { user } = useAuth();
   const { addNote, loading, error } = useAddNote();
-  //const { refetch } = useFetchNotes(user?._id);
+  const { refetch } = useFetchNotes(user?._id);
   const [open, setOpen] = useState(false);
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
@@ -18,8 +18,8 @@ export default function AddNoteModal() {
     setTitle("");
     setDescription("");
     setOpen(false);
-    //refetch();
-    
+    refetch();
+
   };
 
   return (

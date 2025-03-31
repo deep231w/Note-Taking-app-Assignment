@@ -24,7 +24,7 @@ export const openDB = async () => {
     const tx = db.transaction("notes", "readwrite");
     const store = tx.objectStore("notes");
 
-    const formattedNote = { ...note, _id: note._id.toString() };
+    const formattedNote = { ...note, _id: note._id.toString() || crypto.randomUUID() };
 
     console.log("Storing in IndexedDB:", formattedNote); 
 
